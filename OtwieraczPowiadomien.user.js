@@ -6,17 +6,17 @@
 // @include	http://*.wykop.pl/powiadomienia*
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/OtwieraczPowiadomien.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/OtwieraczPowiadomien.user.js
-// @version	1.0.1
+// @version	1.1.0
 // @grant	none
 // @run-at	document-end
 // ==/UserScript==
 
 function main() {
-    var button = '<a class="open" href="javascript: void(0)">otwórz powiadomienia w kartach</a>';
-    $('div.newtagheader p.normal').prepend(button + " | ");
+    var button = '<li><a class="open" title="otwórz powiadomienia w kartach" href="javascript: void(0)">otwórz powiadomienia w kartach</a></li>';
+    $('.grid-main .nav > ul:first').prepend(button);
 
     $(".open").click(function () {
-        $('.bgfbfbd3 > p > a:last-child').each(function () {
+        $('.type-light-warning > p > a:last-of-type').each(function (i) {
             window.open($(this).attr('href'));
         });
     });
