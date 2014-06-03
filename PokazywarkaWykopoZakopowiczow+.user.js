@@ -6,63 +6,99 @@
 // @include     http://*wykop.pl/link/*
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/PokazywarkaWykopoZakopowiczow+.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/PokazywarkaWykopoZakopowiczow+.user.js
-// @version	1.0.4
+// @version	1.1.0
 // @grant	none
 // @run-at	document-end
 // ==/UserScript==
 
 function main() {
-	$(function () {
-		var id = /link\/(\d*)\//.exec(document.location.pathname)[1];
-		var $this = $('header strong[class="fbold"]', '#comments-list-entry');
+    wykop._ajaxCall2 = function (url, action) {
+        if (!url.match(/hash\//)) {
+            if (url.match(/\?/)) {
+                url = url.replace("?", '/hash/' + wykop.params.hash + "?")
+            } else {
+                url += '/hash/' + wykop.params.hash;
+            }
+        }
+        $.ajax(url, {
+            cache: false,
+            error: function (jqXHR, textStatus, errorThrown) {},
+            data: {},
+            type: "GET",
+            dataType: 'json',
+            dataFilter: function (data, type) {
+                if (type != 'json' && type != 'jsonp') {
+                    return data;
+                }
+                var prefix = 'for(;;);';
+                pos = data.indexOf(prefix);
+                if (pos === 0) {
+                    return data.substring(prefix.length);
+                }
+                return data;
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert("error? Napisz do @kasper93 jak się będzie powtarzać.");
+            },
+            success: function (r, textStatus, jqXHR) {
+                var $this = $('div[data-type="comment"] .showProfileSummary b', '.comments-stream');
+                switch (action) {
+                case 'zakopy':
+                    var reason = [];
+                    var people = szukaj(/<b>(.*)<\/b>/g, r.operations[2].html);
+                    var reasons = szukaj(/([a-zęść ]+)<br>/g, r.operations[2].html);
+                    console.log(people);
+                    console.log(reasons);
+                    $this.filter(function () {
+                        var n = people.indexOf($(this).text());
+                        if (n != -1) {
+                            reason.push(reasons[n]);
+                            return true;
+                        }
+                    }).closest('.author').each(function (i) {
+                        $(this).append('<b class="small color-2">(' + reason[i] + ')</b>');
+                    });
+                    break;
+                case 'wykopy':
+                    var people = szukaj(/<b>(.*)<\/b>/g, r.operations[2].html);
+                    $this.filter(function () {
+                        return people.indexOf($(this).text()) != -1;
+                    }).closest('.author').append('<b class="small color-0">(wykopał)</b>');
+                    break;
+                }
+            }
+        });
+    }
 
-		$.getJSON("http://www.wykop.pl/ajax/link/dug/" + id, function (data) {
-			var people = szukaj(/<span class="abs top10 left45">(.*)<\/span>/g, data.html);
+    $(function () {
+        var id = /link\/(\d*)\//.exec(document.location.pathname)[1];
+        wykop._ajaxCall2("http://www.wykop.pl/ajax2/links/Upvoters/" + id, "wykopy");
+        wykop._ajaxCall2("http://www.wykop.pl/ajax2/links/Downvoters/" + id, "zakopy");
+    });
 
-			$this.filter(function () {
-				return people.indexOf($(this).text()) != -1;
-			}).closest('header').append('<span class="small color-0 fbold">(wykopał)</span>');
-		});
-
-		$.getJSON("http://www.wykop.pl/ajax/link/buried/" + id, function (data) {
-			var reason = [];
-			var reasons = szukaj(/<td class="pding10_0 tcenter brtopda vmiddle">([a-zęść ]+)<\/td>/g, data.html);
-			var people = szukaj(/<span class="hvline">(.*?)<\/span>/g, data.html);
-
-			$this.filter(function () {
-				var n = people.indexOf($(this).text());
-				if (n != -1) {
-					reason.push(reasons[n]);
-					return true;
-				}
-			}).closest('header').each(function (i) {
-				$(this).append('<span class="small color-2 fbold">(' + reason[i] + ')</span>')
-			});
-		});
-	});
-
-	function szukaj(r, s) {
-		var a = [], m;
-		while (m = r.exec(s)) {
-			a.push(m[1]);
-		}
-		return a;
-	};
+    function szukaj(r, s) {
+        var a = [], m;
+        while (m = r.exec(s)) {
+            a.push(m[1]);
+        }
+        return a;
+    };
 };
 
 if (typeof $ == 'undefined') {
-	if (typeof unsafeWindow !== 'undefined' && unsafeWindow.jQuery) {
-		var $ = unsafeWindow.jQuery;
-		main();
-	} else {
-		addJQuery(main);
-	}
+    if (typeof unsafeWindow !== 'undefined' && unsafeWindow.jQuery) {
+        var $ = unsafeWindow.jQuery;
+        var wykop = unsafeWindow.wykop;
+        main();
+    } else {
+        addJQuery(main);
+    }
 } else {
-	main();
+    main();
 }
 
 function addJQuery(callback) {
-	var script = document.createElement("script");
-	script.textContent = "(" + callback.toString() + ")();";
-	document.body.appendChild(script);
+    var script = document.createElement("script");
+    script.textContent = "(" + callback.toString() + ")();";
+    document.body.appendChild(script);
 };
