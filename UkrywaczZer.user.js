@@ -7,59 +7,57 @@
 // @include	https://*wykop.pl/*
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/UkrywaczZer.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/UkrywaczZer.user.js
-// @version	1.1.4
+// @version	1.1.5
 // @grant	none
 // @run-at	document-end
 // ==/UserScript==
 
 function main() {
-	$(function() {
-		$('.votes strong:not(".separated") span').filter(function () {
-			return $(this).text() === '0';
-		}).hide();
+    $(function () {
+        ukryjmikro();
+    });
 
-		$('.votes strong.separated').filter(function () {
-			return ($(this).find('span:first').text() === '0' && $(this).find('span:last').text() === '0');
-		}).hide();
-		
-		ukryjmikro();
-	});
-	
-	$(document).ajaxComplete(function() {
-		ukryjmikro();
-	});
-	
-	$('div.recentPlaceHolder').on("click", function () {
-		window.setTimeout(function () {
-			ukryjmikro();
-		}, 500);
-	});
-	
-	function ukryjmikro() {
-		$('#activities-stream .votC span').filter(function () {
-			return $(this).text() === '0';
-		}).remove();
-		var nick = $('.quickpoint a[title="Przejdź do swojego profilu"]').text();
-		$('#activities-stream strong.fbold:contains(' + nick + ')').closest('blockquote').find('.icon.plus').remove();
-	}
+    $(document).ajaxComplete(function () {
+        ukryjmikro();
+    });
+
+    $('div.recentPlaceHolder').on("click", function () {
+        window.setTimeout(function () {
+            ukryjmikro();
+        }, 500);
+    });
+
+    function ukryjmikro() {
+        $('#itemsStream .vC').filter(function () {
+            var $this = $(this).find('b');
+            if ($this.length == 2) {
+                return $this.find('span').text() === '00';
+            } else {
+                return $this.find('span').text() === '0';
+            }
+        }).find('b').remove();
+        //var nick = $('.quickpoint a[title="Przejdź do swojego profilu"]').text();
+        //$('#activities-stream strong.fbold:contains(' + nick + ')').closest('blockquote').find('.icon.plus').remove();
+        //$('a.showVoters').click();
+    }
 }
 
 if (typeof $ == 'undefined') {
-	if (typeof unsafeWindow !== 'undefined' && unsafeWindow.jQuery) {
-		// Firefox
-		var $ = unsafeWindow.jQuery;
-		main();
-	} else {
-		// Chrome
-		addJQuery(main);
-	}
+    if (typeof unsafeWindow !== 'undefined' && unsafeWindow.jQuery) {
+        // Firefox
+        var $ = unsafeWindow.jQuery;
+        main();
+    } else {
+        // Chrome
+        addJQuery(main);
+    }
 } else {
-	// Opera
-	main();
+    // Opera
+    main();
 }
 
 function addJQuery(callback) {
-	var script = document.createElement("script");
-	script.textContent = "(" + callback.toString() + ")();";
-	document.body.appendChild(script);
+    var script = document.createElement("script");
+    script.textContent = "(" + callback.toString() + ")();";
+    document.body.appendChild(script);
 }
