@@ -6,7 +6,7 @@
 // @include	http://*.wykop.pl/*
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/OtwieraczPowiadomien.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/OtwieraczPowiadomien.user.js
-// @version	1.2.1
+// @version	1.2.2
 // @grant	none
 // @run-at	document-end
 // ==/UserScript==
@@ -19,7 +19,7 @@ function main() {
     }
 
     $(document).ajaxComplete(function () {
-        $('.notificationsContainer .menu-list .buttons').append(button1);
+        $('.notificationsContainer .menu-list .buttons') .filter(function() { return !$(this).find('.openFromNotificationsPopup').length; }).append(button1);
     });
 
     $('.notification').on('click', '.openFromNotificationsPopup', function() {
