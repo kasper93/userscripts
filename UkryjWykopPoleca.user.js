@@ -7,7 +7,7 @@
 // @include	https://*.wykop.pl/*
 // @icon	http://img7.imagebanana.com/img/jl5vqqxv/ico.png
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/UkryjWykopPoleca.user.js
-// @version	2.0.3
+// @version	2.0.4
 // @run-at	document-end
 // ==/UserScript==
 
@@ -16,8 +16,8 @@ function main() {
         // Ukrywanie znalezisk poleconych oraz sponsorowanych
         $("a[href*='wykop.pl/reklama']").closest('li.link').remove();
         $(".paylink").closest('li.link').remove();
-        $("div[id*=adocean]").closest('div.rbl-block').parent('#fixedBox').remove();
-        $("div[id*=adocean]").closest('div.rbl-block').remove();
+        $("div[id*=adocean]").closest('div.r-block').parent('#fixedBox').remove();
+        $("div[id*=adocean]").closest('div.r-block').remove();
         $("body").removeClass("screening");
         $(".logoallegro").closest("li").remove();
         if (!$("#relatedList").find("li").length) {
