@@ -7,11 +7,11 @@
 // @include	https://*.wykop.pl/*
 // @icon	http://img7.imagebanana.com/img/jl5vqqxv/ico.png
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/UkryjWykopPoleca.user.js
-// @version	2.0.5
+// @version	2.0.6
 // @run-at	document-end
 // ==/UserScript==
 
-function main() {
+function main($) {
     $.ukryj = function () {
         // Ukrywanie znalezisk poleconych oraz sponsorowanych
         $("a[href*='wykop.pl/reklama']").closest('li.link').remove();
@@ -55,22 +55,5 @@ function main() {
     }
 }
 
-if (typeof $ == 'undefined') {
-    if (typeof unsafeWindow !== 'undefined' && unsafeWindow.jQuery) {
-        // Firefox
-        var $ = unsafeWindow.jQuery;
-        main();
-    } else {
-        // Chrome
-        addJQuery(main);
-    }
-} else {
-    // Opera
-    main();
-}
-
-function addJQuery(callback) {
-    var script = document.createElement("script");
-    script.textContent = "(" + callback.toString() + ")();";
-    document.body.appendChild(script);
-}
+// jQueryLoader, see https://github.com/kasper93/userscripts for unminified version.
+function a(){this.message="unsafeWindow failed!";this.name="Exception"}try{main(jQuery)}catch(b){console.log(b.message);try{if("undefined"===typeof unsafeWindow.jQuery)throw new a;main(unsafeWindow.jQuery)}catch(c){console.log(c.message);try{var d=document.createElement("script");d.textContent="("+main.toString()+")(window.jQuery);";document.body.appendChild(d)}catch(e){console.log(e.message)}}};

@@ -6,12 +6,12 @@
 // @include     http://*wykop.pl/link/*
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/PokazywarkaWykopoZakopowiczow+.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/PokazywarkaWykopoZakopowiczow+.user.js
-// @version	1.1.0
+// @version	1.1.1
 // @grant	none
 // @run-at	document-end
 // ==/UserScript==
 
-function main() {
+function main($) {
     wykop._ajaxCall2 = function (url, action) {
         if (!url.match(/hash\//)) {
             if (url.match(/\?/)) {
@@ -38,7 +38,7 @@ function main() {
                 return data;
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                alert("error? Napisz do @kasper93 jak się będzie powtarzać.");
+                console.log("Napisz do @kasper93 jak się będzie powtarzać.");
             },
             success: function (r, textStatus, jqXHR) {
                 var $this = $('div[data-type="comment"] .showProfileSummary b', '.comments-stream');
@@ -85,20 +85,5 @@ function main() {
     };
 };
 
-if (typeof $ == 'undefined') {
-    if (typeof unsafeWindow !== 'undefined' && unsafeWindow.jQuery) {
-        var $ = unsafeWindow.jQuery;
-        var wykop = unsafeWindow.wykop;
-        main();
-    } else {
-        addJQuery(main);
-    }
-} else {
-    main();
-}
-
-function addJQuery(callback) {
-    var script = document.createElement("script");
-    script.textContent = "(" + callback.toString() + ")();";
-    document.body.appendChild(script);
-};
+// jQueryLoader, see https://github.com/kasper93/userscripts for unminified version.
+function a(){this.message="unsafeWindow failed!";this.name="Exception"}try{main(jQuery)}catch(b){console.log(b.message);try{if("undefined"===typeof unsafeWindow.jQuery)throw new a;var wykop=unsafeWindow.wykop;main(unsafeWindow.jQuery)}catch(c){console.log(c.message);try{var d=document.createElement("script");d.textContent="("+main.toString()+")(window.jQuery);";document.body.appendChild(d)}catch(e){console.log(e.message)}}};
