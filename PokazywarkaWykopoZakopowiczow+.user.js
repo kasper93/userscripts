@@ -6,7 +6,7 @@
 // @include     http://*wykop.pl/link/*
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/PokazywarkaWykopoZakopowiczow+.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/PokazywarkaWykopoZakopowiczow+.user.js
-// @version	1.1.1
+// @version	1.2.0
 // @grant	none
 // @run-at	document-end
 // ==/UserScript==
@@ -21,51 +21,35 @@ function main($) {
             }
         }
         $.ajax(url, {
-            cache: false,
-            error: function (jqXHR, textStatus, errorThrown) {},
-            data: {},
-            type: "GET",
-            dataType: 'json',
-            dataFilter: function (data, type) {
-                if (type != 'json' && type != 'jsonp') {
-                    return data;
-                }
-                var prefix = 'for(;;);';
-                pos = data.indexOf(prefix);
-                if (pos === 0) {
-                    return data.substring(prefix.length);
-                }
-                return data;
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.log("Napisz do @kasper93 jak się będzie powtarzać.");
-            },
-            success: function (r, textStatus, jqXHR) {
-                var $this = $('div[data-type="comment"] .showProfileSummary b', '.comments-stream');
-                switch (action) {
-                case 'zakopy':
-                    var reason = [];
-                    var people = szukaj(/<b>(.*)<\/b>/g, r.operations[2].html);
-                    var reasons = szukaj(/([a-zęść ]+)<br>/g, r.operations[2].html);
-                    console.log(people);
-                    console.log(reasons);
-                    $this.filter(function () {
-                        var n = people.indexOf($(this).text());
-                        if (n != -1) {
-                            reason.push(reasons[n]);
-                            return true;
-                        }
-                    }).closest('.author').each(function (i) {
-                        $(this).append('<b class="small color-2">(' + reason[i] + ')</b>');
-                    });
-                    break;
-                case 'wykopy':
-                    var people = szukaj(/<b>(.*)<\/b>/g, r.operations[2].html);
-                    $this.filter(function () {
-                        return people.indexOf($(this).text()) != -1;
-                    }).closest('.author').append('<b class="small color-0">(wykopał)</b>');
-                    break;
-                }
+            dataType: 'text'
+        }).done(function (r) {
+            if (r.indexOf('for(;;);') === 0) {
+                // Why? Because #maciejpsuje, that's why.
+                r = r.slice(8);
+            }
+            r = $.parseJSON(r);
+            var $this = $('div[data-type="comment"] .showProfileSummary b', '.comments-stream');
+            switch (action) {
+            case 'zakopy':
+                var reason = [];
+                var people = szukaj(/<b>(.*)<\/b>/g, r.operations[2].html);
+                var reasons = szukaj(/([a-zęść ]+)<br>/g, r.operations[2].html);
+                $this.filter(function () {
+                    var n = people.indexOf($(this).text());
+                    if (n != -1) {
+                        reason.push(reasons[n]);
+                        return true;
+                    }
+                }).closest('.author').each(function (i) {
+                    $(this).append('<b class="small color-2">(' + reason[i] + ')</b>');
+                });
+                break;
+            case 'wykopy':
+                var people = szukaj(/<b>(.*)<\/b>/g, r.operations[2].html);
+                $this.filter(function () {
+                    return people.indexOf($(this).text()) != -1;
+                }).closest('.author').append('<b class="small color-0">(wykopał)</b>');
+                break;
             }
         });
     }
