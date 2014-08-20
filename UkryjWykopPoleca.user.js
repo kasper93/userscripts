@@ -7,7 +7,7 @@
 // @include	https://*.wykop.pl/*
 // @icon	http://img7.imagebanana.com/img/jl5vqqxv/ico.png
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/UkryjWykopPoleca.user.js
-// @version	2.0.6
+// @version	2.0.7
 // @run-at	document-end
 // ==/UserScript==
 
@@ -21,6 +21,7 @@ function main($) {
         $("div[id*=adocean]").closest('div.r-block').parent('#fixedBox').remove();
         $("div[id*=adocean]").closest('div.r-block').remove();
         $("body").removeClass("screening");
+        $(".payentry").remove();
         $(".logoallegro").closest("li").remove();
         if (!$("#relatedList").find("li").length) {
             $("#relatedList").remove();
