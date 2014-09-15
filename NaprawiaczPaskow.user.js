@@ -7,66 +7,41 @@
 // @include	https://*wykop.pl/*
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/NaprawiaczPaskow.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/NaprawiaczPaskow.user.js
-// @version	1.0.22
+// @version	2.0.0
 // @grant	none
 // @run-at	document-end
 // ==/UserScript==
 
-function main() {
-	var roz = ['ppj', 'dziadekwie', 'kasiknocheinmal', 'Faf', 'imyodda', 'fir3fly', 'Aerials', 'spojrz', 'xyz23', 'mozaika', 'evesia'];
+function main($) {
+	var roz = ['ppj', 'dziadekwie', 'kasiknocheinmal', 'Faf', 'imyodda', 'fir3fly', 'Aerials', 'spojrz', 'xyz23', 'mozaika', 'evesia', 'ZgubilemRodzicow'];
 	var nieb = ['PanBulka', 'MasterSoundBlaster', 'kokaina', 'Kozzi', 'Baron_Al_von_PuciPusia', 'plusbear', 'nie_daje_rady', 'jaras2', 'keram244', 'lecho', 'Grzesiu_Lato', 'grimes997', 'sarge', 'EtaCarinae', '-PPP-', 'zakowskijan72', 'Misieq84', 'Yossarian82', 'MarZam', 'funk', 'CzekoladowyRambo', 'Nrb', 'konfafal', 'tomasz_B', 'Drzwi'];
 	
 	$(function() {
-		napraw();
-		naprawProfil();
+		naprawPasek($('.user-profile').data('id'), $('.user-profile .photo > .avatar'));
+		znajdz();
 	});
 	
 	$(document).ajaxComplete(function() {
-		napraw();
+		znajdz();
 	});
 	
-	$('div.recentPlaceHolder').on("click", function () {
-		napraw();
-	});
-	
-	function napraw() {
-		$('cite.abs > a').each(function () {
-			if (nieb.indexOf($(this).attr("title").substring(7)) != -1) {
-				$(this).removeClass('female').addClass('male');
-			} else if (roz.indexOf($(this).attr("title").substring(7)) != -1) {
-				$(this).removeClass('male').addClass('female');
-			}
-		});
-	}
-	
-	function naprawProfil() {
-		var url_arr = document.location.pathname.split('/');
-		if (url_arr[1] == "ludzie") {
-			if (nieb.indexOf(url_arr[2]) != -1) {
-				$('.usercard > .photo').removeClass('female').addClass('male');
-			} else if (roz.indexOf(url_arr[2]) != -1) {
-				$('.usercard > .photo').removeClass('male').addClass('female');
-			}
+	function naprawPasek(nick, avatar) {
+		if (nieb.indexOf(nick) != -1) {
+			avatar.removeClass('female').addClass('male');
+		} else if (roz.indexOf(nick) != -1) {
+			avatar.removeClass('male').addClass('female');
 		}
 	}
-}
 
-if (typeof $ == 'undefined') {
-	if (typeof unsafeWindow !== 'undefined' && unsafeWindow.jQuery) {
-		// Firefox
-		var $ = unsafeWindow.jQuery;
-		main();
-	} else {
-		// Chrome
-		addJQuery(main);
+	function znajdz() {
+		$('.profile').each(function () {
+			naprawPasek($(this).attr("href").split('/')[4], $(this).children('.avatar'));
+		});
+		$('.summary.user').each(function () {
+			naprawPasek($(this).data('login'), $(this).find('.avatar'));
+		});
 	}
-} else {
-	// Opera
-	main();
 }
 
-function addJQuery(callback) {
-	var script = document.createElement("script");
-	script.textContent = "(" + callback.toString() + ")();";
-	document.body.appendChild(script);
-}
+// jQueryLoader, see https://github.com/kasper93/userscripts for unminified version.
+function a(){this.message="unsafeWindow failed!";this.name="Exception"}try{main(jQuery)}catch(b){console.log(b.message);try{if("undefined"===typeof unsafeWindow.jQuery)throw new a;main(unsafeWindow.jQuery)}catch(c){console.log(c.message);try{var d=document.createElement("script");d.textContent="("+main.toString()+")(window.jQuery);";document.body.appendChild(d)}catch(e){console.log(e.message)}}};
