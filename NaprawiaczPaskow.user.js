@@ -7,14 +7,14 @@
 // @include	https://*wykop.pl/*
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/NaprawiaczPaskow.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/NaprawiaczPaskow.user.js
-// @version	2.0.0
+// @version	2.0.1
 // @grant	none
 // @run-at	document-end
 // ==/UserScript==
 
 function main($) {
 	var roz = ['ppj', 'dziadekwie', 'kasiknocheinmal', 'Faf', 'imyodda', 'fir3fly', 'Aerials', 'spojrz', 'xyz23', 'mozaika', 'evesia', 'ZgubilemRodzicow'];
-	var nieb = ['PanBulka', 'MasterSoundBlaster', 'kokaina', 'Kozzi', 'Baron_Al_von_PuciPusia', 'plusbear', 'nie_daje_rady', 'jaras2', 'keram244', 'lecho', 'Grzesiu_Lato', 'grimes997', 'sarge', 'EtaCarinae', '-PPP-', 'zakowskijan72', 'Misieq84', 'Yossarian82', 'MarZam', 'funk', 'CzekoladowyRambo', 'Nrb', 'konfafal', 'tomasz_B', 'Drzwi'];
+	var nieb = ['PanBulka', 'MasterSoundBlaster', 'kokaina', 'Kozzi', 'Baron_Al_von_PuciPusia', 'plusbear', 'nie_daje_rady', 'jaras2', 'keram244', 'lecho', 'Grzesiu_Lato', 'grimes997', 'sarge', 'EtaCarinae', '-PPP-', 'zakowskijan72', 'Misieq84', 'Yossarian82', 'MarZam', 'funk', 'CzekoladowyRambo', 'Nrb', 'konfafal', 'tomasz_B', 'Drzwi', 'zwirz'];
 	
 	$(function() {
 		naprawPasek($('.user-profile').data('id'), $('.user-profile .photo > .avatar'));
