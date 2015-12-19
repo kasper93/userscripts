@@ -2,53 +2,34 @@
 // @name	Koniec zniw
 // @namespace	https://github.com/kasper93/
 // @author	kasper93
-// @description	Zakopuje zboze
-// @include	*wykop.pl/szukaj/*zboze*
-// @include	*wykop.pl/szukaj/*zboże*
-// @include	*wykop.pl/szukaj/*zbo%C5%BCe*
-// @include	*wykop.pl/szukaj/*beton*
+// @description	Zakopuje wszystkie znaleziska na danej stronie. Nazwa skryptu pochodzi z pamietnej afery, ktora zainspirowala do jego stworzenia.
+// @include	http://*wykop.pl/szukaj/*
+// @include	http://*wykop.pl/tag/znaleziska/*
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/KoniecZniw.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/KoniecZniw.user.js
-// @version	2.2.1
+// @version	3.0.0
 // @run-at	document-end
 // ==/UserScript==
 
-// http://www.wykop.pl/szukaj/zboże/?search[what]=upcoming&search[sort]=new
-// http://www.wykop.pl/szukaj/zboze/?search[what]=upcoming&search[sort]=new
-// http://www.wykop.pl/szukaj/beton/?search[what]=upcoming&search[sort]=new
+// Skrypt dziala na stronach:
+// http://www.wykop.pl/szukaj/<cokolwiek>
+// http://www.wykop.pl/tag/znaleziska/<cokolwiek>
 
-if (typeof $ == 'undefined') {
-	if (typeof unsafeWindow !== 'undefined' && unsafeWindow.jQuery) {
-		// Firefox
-		var $ = unsafeWindow.jQuery;
-		var hash = unsafeWindow.hash;
-		var logged = unsafeWindow.logged;
-		var www_base = unsafeWindow.www_base;
-		main();
-	} else {
-		// Chrome
-		addJQuery(main);
-	}
-} else {
-	// Opera
-	main();
-}
+function main($) {
+	if (!wykop.params.logged || !confirm('Czy na pewno chcesz zakopać ' + $('.diggbox').not('.digout').length + ' znaleziska na tej stronie?'))
+		return;
 
-function main() {
-	$('.diggbox > a').filter(function() { return logged && $(this).attr('href'); }).each(function () {
-		var url = www_base + 'ajax/link/bury/type/5/link/' + $(this).closest('article').data().id + '/hash/' + hash;
-		$.getJSON(url, {}, function (r) {
-			if (r.error) {
-				alert(r.error);
-				return;
-			}
-			console.log('zakopano ' + r.id + ' [' + r.vote + '/' + r.bury + ']');
-		});
+	$('.diggbox').not('.digout').each(function () {
+ 		var url = 'http://www.wykop.pl/ajax2/links/voteDown/' + $(this).closest('.article').data("id") + '/5/hash/' + wykop.params.hash;
+ 		$.getJSON(url, {}, function (r) {
+ 			if (r.error) {
+ 				alert(r.error);
+ 				return;
+ 			}
+ 			console.log('zakopano ' + r.id + ' [' + r.vote + '/' + r.bury + ']');
+ 		});
 	});
 }
 
-function addJQuery(callback) {
-	var script = document.createElement("script");
-	script.textContent = "(" + callback.toString() + ")();";
-	document.body.appendChild(script);
-}
+// jQueryLoader, see https://github.com/kasper93/userscripts for unminified version.
+function a(){this.message="unsafeWindow failed!";this.name="Exception"}try{main(jQuery)}catch(b){console.log(b.message);try{if("undefined"===typeof unsafeWindow.jQuery)throw new a;main(unsafeWindow.jQuery)}catch(c){console.log(c.message);try{var d=document.createElement("script");d.textContent="("+main.toString()+")(window.jQuery);";document.body.appendChild(d)}catch(e){console.log(e.message)}}};
