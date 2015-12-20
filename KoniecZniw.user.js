@@ -7,7 +7,7 @@
 // @include	http://*wykop.pl/tag/znaleziska/*
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/KoniecZniw.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/KoniecZniw.user.js
-// @version	3.0.0
+// @version	3.0.1
 // @run-at	document-end
 // ==/UserScript==
 
@@ -16,7 +16,8 @@
 // http://www.wykop.pl/tag/znaleziska/<cokolwiek>
 
 function main($) {
-	if (!wykop.params.logged || !confirm('Czy na pewno chcesz zakopać ' + $('.diggbox').not('.digout').length + ' znaleziska na tej stronie?'))
+	var c = $('.diggbox').not('.digout').length;
+	if (c <= 0 || !wykop.params.logged || !confirm('Czy na pewno chcesz zakopać ' + c + ' znaleziska na tej stronie?'))
 		return;
 
 	$('.diggbox').not('.digout').each(function () {
