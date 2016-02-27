@@ -5,30 +5,17 @@
 // @description	Ukrywa znaleziska polecane i sponsorowane.
 // @include	http://*.wykop.pl/*
 // @include	https://*.wykop.pl/*
-// @icon	http://img7.imagebanana.com/img/jl5vqqxv/ico.png
+// @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/UkryjWykopPoleca.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/UkryjWykopPoleca.user.js
-// @version	2.0.7
+// @version	2.1.0
+// @grant	none
 // @run-at	document-end
 // ==/UserScript==
 
 function main($) {
     $.ukryj = function () {
-        // Ukrywanie znalezisk poleconych oraz sponsorowanych
-        $("a[href*='wykop.pl/reklama']").closest('li.link').remove();
-        $(".paylink").closest('li.link').remove();
-        $("div[id*=adocean]").closest('div.rbl-block').parent('#fixedBox').remove();
-        $("div[id*=adocean]").closest('div.rbl-block').remove();
-        $("div[id*=adocean]").closest('div.r-block').parent('#fixedBox').remove();
-        $("div[id*=adocean]").closest('div.r-block').remove();
-        $("body").removeClass("screening");
-        $(".payentry").remove();
-        $(".logoallegro").closest("li").remove();
-        if (!$("#relatedList").find("li").length) {
-            $("#relatedList").remove();
-        }
-
         // Ukrywanie reklam w urwisku
-        $("#dyingLinksBox a[href*='wykop.pl/market']").each(function () {
+        $("#dyingLinksBox a[href*='/market']").each(function () {
             var $parent = $(this).closest('li');
             var $prev;
             if ($parent.prev().length > 0) {
@@ -42,6 +29,20 @@ function main($) {
                 $prev.closest("#dyingLinksBox").remove();
             }
         });
+
+        // Ukrywanie znalezisk poleconych oraz sponsorowanych
+        $("a[href$='/reklama/']").closest('li.link').remove();
+        $("a[href^='/paylink/']").closest('li.link').remove();
+        window.wykop.floatRightAd=function(){};
+        $('#fixedBox').remove();
+        $('#fixedBoxIdent').remove();
+        $("div[id*=bmone2n]").remove();
+        $("body").removeClass("screening");
+        $(".payentry").remove();
+        $(".logoallegro").closest("li").remove();
+        if (!$("#relatedList").find("li").length) {
+            $("#relatedList").remove();
+        }
 
         // Ukrywanie trackerów
         $('img[src*="wykop.pl/tracker/emiter"]').remove();
