@@ -2,12 +2,12 @@
 // @name	Naprawiacz pasków
 // @namespace	https://github.com/kasper93/
 // @author	kasper93
-// @description	Zmienia kolor paska pod awatarem osobom, które mają źle ustawiona pleć w profilu. 
+// @description	Zmienia kolor paska pod awatarem osobom, które mają źle ustawiona pleć w profilu.
 // @include	http://*wykop.pl/*
 // @include	https://*wykop.pl/*
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/NaprawiaczPaskow.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/NaprawiaczPaskow.user.js
-// @version	2.0.1
+// @version	2.1.0
 // @grant	none
 // @run-at	document-end
 // ==/UserScript==
@@ -15,16 +15,16 @@
 function main($) {
 	var roz = ['ppj', 'dziadekwie', 'kasiknocheinmal', 'Faf', 'imyodda', 'fir3fly', 'Aerials', 'spojrz', 'xyz23', 'mozaika', 'evesia', 'ZgubilemRodzicow'];
 	var nieb = ['PanBulka', 'MasterSoundBlaster', 'kokaina', 'Kozzi', 'Baron_Al_von_PuciPusia', 'plusbear', 'nie_daje_rady', 'jaras2', 'keram244', 'lecho', 'Grzesiu_Lato', 'grimes997', 'sarge', 'EtaCarinae', '-PPP-', 'zakowskijan72', 'Misieq84', 'Yossarian82', 'MarZam', 'funk', 'CzekoladowyRambo', 'Nrb', 'konfafal', 'tomasz_B', 'Drzwi', 'zwirz'];
-	
+
 	$(function() {
 		naprawPasek($('.user-profile').data('id'), $('.user-profile .photo > .avatar'));
 		znajdz();
 	});
-	
+
 	$(document).ajaxComplete(function() {
 		znajdz();
 	});
-	
+
 	function naprawPasek(nick, avatar) {
 		if (nieb.indexOf(nick) != -1) {
 			avatar.removeClass('female').addClass('male');
@@ -35,7 +35,8 @@ function main($) {
 
 	function znajdz() {
 		$('.profile').each(function () {
-			naprawPasek($(this).attr("href").split('/')[4], $(this).children('.avatar'));
+			var arr = $(this).attr("href").split('/')
+			naprawPasek(arr[arr.length-2], $(this).children('.avatar'));
 		});
 		$('.summary.user').each(function () {
 			naprawPasek($(this).data('login'), $(this).find('.avatar'));
