@@ -7,7 +7,7 @@
 // @include	https://*.wykop.pl/*
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/UkryjWykopPoleca.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/UkryjWykopPoleca.user.js
-// @version	2.1.0
+// @version	2.2.0
 // @grant	none
 // @run-at	document-end
 // ==/UserScript==
@@ -50,6 +50,10 @@ function main($) {
 
         // Ukrywanie reklamy appki wykopu
         $('.baner-mobile').parent().remove();
+
+        $("body").removeClass("prawykop");
+        $("#site").css("padding-top", "50px");
+        $(".praZubrShadow").remove();
     };
 
     if ($.isFunction($.ukryj)) {
