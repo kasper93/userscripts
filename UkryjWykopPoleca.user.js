@@ -7,7 +7,7 @@
 // @include	https://*.wykop.pl/*
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/UkryjWykopPoleca.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/UkryjWykopPoleca.user.js
-// @version	2.2.0
+// @version	2.3.0
 // @grant	none
 // @run-at	document-end
 // ==/UserScript==
@@ -31,8 +31,8 @@ function main($) {
         });
 
         // Ukrywanie znalezisk poleconych oraz sponsorowanych
-        $("a[href$='/reklama/']").closest('li.link').remove();
-        $("a[href^='/paylink/']").closest('li.link').remove();
+        $("a[href$='/reklama']").closest('li.link').remove();
+        $("a[href^='/paylink']").closest('li.link').remove();
         window.wykop.floatRightAd=function(){};
         $('#fixedBox').remove();
         $('#fixedBoxIdent').remove();
