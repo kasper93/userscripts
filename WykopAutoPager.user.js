@@ -8,7 +8,7 @@
 // @exclude	/^http://[a-z]+\.wykop\.pl/(ramka|link|dodaj)/*/
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/WykopAutoPager.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/WykopAutoPager.user.js
-// @version	3.0.3
+// @version	3.1.0
 // @grant	none
 // @run-at	document-end
 // ==/UserScript==
@@ -36,7 +36,9 @@ function main($) {
 
         wykop.nowaStrona = function (html) {
             var $html = $(html);
-            $('#itemsStream').append($html.find('#itemsStream li.iC'));
+            var $items = $html.find('#itemsStream li.iC');
+            $('#itemsStream').append($items);
+            wykop.bindSurveyForm($items);
             $('.grid-main').append($html.find('.grid-main div.addons'));
             $('.menu-list.notification').append($html.find('.grid-main .menu-list.notification li'));
             var pagerOld = pager;
