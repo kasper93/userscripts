@@ -7,7 +7,7 @@
 // @include	https://*.wykop.pl/*
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/UkryjWykopPoleca.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/UkryjWykopPoleca.user.js
-// @version	2.3.2
+// @version	2.4.0
 // @grant	none
 // @run-at	document-end
 // ==/UserScript==
@@ -51,6 +51,13 @@ function main($) {
 
         // Ukrywanie reklamy appki wykopu
         $('.baner-mobile').parent().remove();
+
+        // Dla niezalogowanych
+        $("#dfp-sponsorowany_top").closest('li.link').remove();
+        var GA = $(".adsbygoogle");
+        GA.closest('li.link').remove();
+        GA.remove();
+        $("[class^='dfp-']").remove();
     };
 
     if ($.isFunction($.ukryj)) {
