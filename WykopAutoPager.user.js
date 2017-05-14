@@ -4,11 +4,12 @@
 // @author	kasper93
 // @description	Automatycznie ładuje kolejną stronę po osiągnięciu końca poprzedniej.
 // @include	http://*.wykop.pl/*
+// @include	https://*.wykop.pl/*
 // @exclude	/^http://www\.wykop\.pl/(info|regulamin|reklama|polityka-prywatnosci|pomoc|kontakt|osiagniecia|grupy|developers|gry)//
 // @exclude	/^http://[a-z]+\.wykop\.pl/(ramka|link|dodaj)/*/
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/WykopAutoPager.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/WykopAutoPager.user.js
-// @version	3.1.0
+// @version	3.1.1
 // @grant	none
 // @run-at	document-end
 // ==/UserScript==

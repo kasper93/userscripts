@@ -4,9 +4,10 @@
 // @author	kasper93, oparte na pomyśle i wykonaniu przez owczareknietrzymryjski
 // @description	Skrypt pokazuje przy komentarzach czy ktoś zakopał / wykopał dane znalezisko 
 // @include     http://*wykop.pl/link/*
+// @include     https://*wykop.pl/link/*
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/PokazywarkaWykopoZakopowiczow+.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/PokazywarkaWykopoZakopowiczow+.user.js
-// @version	1.2.0
+// @version	1.2.1
 // @grant	none
 // @run-at	document-end
 // ==/UserScript==

@@ -7,9 +7,13 @@
 // @include	http://*.wykop.pl/mikroblog*
 // @include	http://*.wykop.pl/wpis*
 // @include	http://*.wykop.pl/tag*
+// @include	https://*.wykop.pl/link*
+// @include	https://*.wykop.pl/mikroblog*
+// @include	https://*.wykop.pl/wpis*
+// @include	https://*.wykop.pl/tag*
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/WykopPokazObrazki.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/WykopPokazObrazki.user.js
-// @version	1.5.2
+// @version	1.5.3
 // @grant	none
 // @run-at	document-end
 // ==/UserScript==

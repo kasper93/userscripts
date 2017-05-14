@@ -4,9 +4,10 @@
 // @author	kasper93
 // @description	Dodaje przycisk ABW na belce.
 // @include	http://*wykop.pl/*
+// @include	https://*wykop.pl/*
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/PrzyciskABW.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/PrzyciskABW.user.js
-// @version	1.0.2
+// @version	1.0.3
 // @grant	none
 // @run-at	document-end
 // ==/UserScript==

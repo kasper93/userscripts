@@ -4,9 +4,10 @@
 // @author	kasper93
 // @description	Sprawdza czy dana osoba ma nas na czarnolisto. Zapamiętuje to i oznacza.
 // @include	http://*.wykop.pl/*
+// @include	https://*.wykop.pl/*
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/SprawdzaczCzarnolisto.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/SprawdzaczCzarnolisto.user.js
-// @version	2.4.2
+// @version	2.4.3
 // @grant	none
 // @run-at	document-end
 // ==/UserScript==

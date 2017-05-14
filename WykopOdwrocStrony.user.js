@@ -4,11 +4,12 @@
 // @author	kasper93
 // @description	Odwraca numeracje stron na wykopie.
 // @include http://*.wykop.pl/*
+// @include https://*.wykop.pl/*
 // @exclude	/^http://www\.wykop\.pl/(info|regulamin|reklama|polityka-prywatnosci|pomoc|kontakt|osiagniecia|grupy|developers|gry)//
 // @exclude	/^http://[a-z]+\.wykop\.pl/(ramka|link|dodaj)/*/
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/WykopOdwrocStrony.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/WykopOdwrocStrony.user.js
-// @version	1.0.5
+// @version	1.0.6
 // @grant	none
 // @run-at	document-end
 // ==/UserScript==

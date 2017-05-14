@@ -3,10 +3,11 @@
 // @namespace	https://github.com/kasper93/
 // @author	kasper93
 // @description	Otwiera wszystkie nieprzeczytane powiadomienia w kartach.
-// @include	http://*.wykop.pl/*
+// @include	http://*wykop.pl/*
+// @include	https://*wykop.pl/*
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/OtwieraczPowiadomien.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/OtwieraczPowiadomien.user.js
-// @version	1.2.3
+// @version	1.2.4
 // @grant	none
 // @run-at	document-end
 // ==/UserScript==

@@ -5,9 +5,11 @@
 // @description	Zakopuje wszystkie znaleziska na danej stronie. Nazwa skryptu pochodzi z pamietnej afery, ktora zainspirowala do jego stworzenia.
 // @include	http://*wykop.pl/szukaj/*
 // @include	http://*wykop.pl/tag/znaleziska/*
+// @include	https://*wykop.pl/szukaj/*
+// @include	https://*wykop.pl/tag/znaleziska/*
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/KoniecZniw.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/KoniecZniw.user.js
-// @version	3.0.1
+// @version	3.0.2
 // @run-at	document-end
 // ==/UserScript==
 
