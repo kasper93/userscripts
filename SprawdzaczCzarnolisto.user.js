@@ -7,7 +7,7 @@
 // @include	https://*.wykop.pl/*
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/SprawdzaczCzarnolisto.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/SprawdzaczCzarnolisto.user.js
-// @version	2.4.3
+// @version	2.4.4
 // @grant	none
 // @run-at	document-end
 // ==/UserScript==
@@ -27,7 +27,7 @@ function main($) {
     if (gdzie("wpis")) {
         sprawdzCzarnolisto($('li[data-type=entry]'));
     }
-    
+
     $(".activitiesStream").on("focus", ".addcommentin", function() {
         sprawdzCzarnolisto($(this).closest('li[data-type=entry]'));
     });
@@ -38,7 +38,7 @@ function main($) {
             var id = entry.data("id");
             if (nick != self) {
                 $.ajax({
-                    url: "http://a.wykop.pl/entries/index/" + id + "/appkey," + apiKey + ",format,jsonp",
+                    url: "//a.wykop.pl/entries/index/" + id + "/appkey," + apiKey + ",format,jsonp",
                     type: "GET",
                     dataType: "jsonp",
                     jsonp : false,

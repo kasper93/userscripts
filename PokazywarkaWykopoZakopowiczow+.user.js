@@ -7,7 +7,7 @@
 // @include     https://*wykop.pl/link/*
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/PokazywarkaWykopoZakopowiczow+.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/PokazywarkaWykopoZakopowiczow+.user.js
-// @version	1.2.1
+// @version	1.2.2
 // @grant	none
 // @run-at	document-end
 // ==/UserScript==
@@ -57,8 +57,8 @@ function main($) {
 
     $(function () {
         var id = /link\/(\d*)\//.exec(document.location.pathname)[1];
-        wykop._ajaxCall2("http://www.wykop.pl/ajax2/links/Upvoters/" + id, "wykopy");
-        wykop._ajaxCall2("http://www.wykop.pl/ajax2/links/Downvoters/" + id, "zakopy");
+        wykop._ajaxCall2("//www.wykop.pl/ajax2/links/Upvoters/" + id, "wykopy");
+        wykop._ajaxCall2("//www.wykop.pl/ajax2/links/Downvoters/" + id, "zakopy");
     });
 
     function szukaj(r, s) {
