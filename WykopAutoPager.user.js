@@ -9,12 +9,13 @@
 // @exclude	/^http://[a-z]+\.wykop\.pl/(ramka|link|dodaj)/*/
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/WykopAutoPager.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/WykopAutoPager.user.js
-// @version	3.1.1
+// @version	3.1.2
 // @grant	none
 // @run-at	document-end
 // ==/UserScript==
 
 function main($) {
+    wykop = wykop || unsafeWindow.wykop;
     var nastepnaStronaButton = $("a.button:contains('następna')");
     if (nastepnaStronaButton.length) {
         var enabled = true;
