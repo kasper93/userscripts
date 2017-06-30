@@ -7,7 +7,7 @@
 // @include	https://*.wykop.pl/*
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/UkryjWykopPoleca.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/UkryjWykopPoleca.user.js
-// @version	2.4.0
+// @version	2.4.1
 // @grant	none
 // @run-at	document-end
 // ==/UserScript==
@@ -26,7 +26,8 @@ function main($) {
             $prev.show();
             $parent.remove();
             if ($prev.closest("#dyingLinksBox").children().length == 1) {
-                $prev.closest("#dyingLinksBox").remove();
+                $prev.find(".prev-link").remove();
+                $prev.find(".next-link").remove();
             }
         });
 
@@ -58,6 +59,8 @@ function main($) {
         GA.closest('li.link').remove();
         GA.remove();
         $("[class^='dfp-']").remove();
+        $(".screening-displace").remove();
+        $("[id^=banner_rectangle]").remove();
     };
 
     if ($.isFunction($.ukryj)) {
