@@ -2,7 +2,7 @@
 // @name	Wykop pokaż obrazki
 // @namespace	https://github.com/kasper93/
 // @author	kasper93
-// @description	Umożliwia załadowanie wszystkich obrazków/filmików w komentarzach/wpisach za pomoca tylko jednego przycisku. 
+// @description	Umożliwia załadowanie wszystkich obrazków/filmików w komentarzach/wpisach za pomoca tylko jednego przycisku.
 // @include	http://*.wykop.pl/link*
 // @include	http://*.wykop.pl/mikroblog*
 // @include	http://*.wykop.pl/wpis*
@@ -13,104 +13,97 @@
 // @include	https://*.wykop.pl/tag*
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/WykopPokazObrazki.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/WykopPokazObrazki.user.js
-// @version	1.5.3
+// @version	2.0.0
 // @grant	none
-// @run-at	document-end
+// @run-at	document-idle
 // ==/UserScript==
 
-function main($) {
-    //ustawienia
-    var bLoadImg = true;
-    var bLoadVid = false;
-    var bRemoveWatermark = true;
-    var settings = "autoLoadImages";
-    var auto = localStorage.getItem(settings);
-    //koniec ustawień
-    var buttons = '<ul><li><a class="btnAutoLadowanie" href="javascript: void(0)">auto</a></li><li><a class="btnZaladujObrazki" href="javascript: void(0)">pokaż obrazki</a></li></ul>';
-    var button = '<li><a class="affect hide btnPokazObrazki" href="javascript: void(0)"><i class="fa fa-camera"></i> Pokaż obrazki</a></li>';
-    $(".responsive-menu").append(button);
-    $(".nav.bspace.rbl-block").prepend(buttons);
+(function() {
+    const bLoadImg = true;
+    const bLoadVid = false;
+    const bRemoveWatermark = true;
 
-    // Ładujemy automatycznie?
-    $(document).ready(function () {
-        if ("on" == auto) {
-            var $this = $('.comments-stream');
-            $("a", $this).open();
-            $(".btnAutoLadowanie").parent().addClass("active");
-            linki($this);
-        }
-    });
+    const settings = 'autoLoadImages';
+    let auto = localStorage.getItem(settings) === 'true' || false;
 
-    // Ładujemy obrazki z całej strony po kliknięciu na przycisk.
-    $(".btnZaladujObrazki").click(function () {
-        var $this = $(this).closest('.grid-main').find('.comments-stream');
-        $("a", $this).open();
-        linki($this);
-    });
+    const processMediaContent = (mc) => {
+        if (!mc.classList.contains('media-content'))
+            return;
 
-    // Ładujemy obrazki z danego wpisu po kliknięciu na 'v'.
-    $(".btnPokazObrazki").on("click", function () {
-        var $this = $(this).closest('div.dC');
-        $("a", $this).open();
-        $("a.show-more", $this).click();
-        linki($this);
-    });
+        const desc = mc.getElementsByClassName('description')[0];
 
-    // ustawienia auto [on/off]
-    $(".btnAutoLadowanie").click(function () {
-        if ("on" == auto) {
-            localStorage.setItem(settings, "off");
-            auto = "off";
-            $(this).parent().removeClass("active");
-        } else {
-            localStorage.setItem(settings, "on");
-            auto = "on";
-            $(this).parent().addClass("active");
-        }
-    });
+        mc.style.maxWidth = '99%';
+        mc.style.maxHeight = `${0.85 * window.innerHeight + desc.getBoundingClientRect().height}px`;
 
-    // magiczna funkcja zmuszająca funkcje wykopowe do rozwinięcia obrazka.
-    $.fn.open = function () {
-        $(this).filter(function () {
-            var $th = $(this);
-            return "undefined" != typeof $th.attr("href") && "lightbox[w]" !== $th.attr("rel") && (bLoadImg && $th.attr("href").match(/\.(jpg|jpeg|png|gif)/i) || bLoadVid && $th.attr("href").match(/(youtube\.|youtu\.be|vimeo\.com)/i));
-        }).trigger({
-            type: "click",
-            which: 0
-        });
+        const a = desc.getElementsByTagName('a')[0];
+        a.style.width = 'auto';
+
+        const expand = mc.getElementsByClassName('expand')[0];
+        if (expand)
+            expand.remove();
+        mc.classList.remove('too-long-pic');
+
+        const gif = mc.querySelectorAll('p.icon-media.gif')[0];
+        if (gif)
+            gif.remove();
+
+        let src = a.href;
+        if (bRemoveWatermark && typeof src !== 'undefined')
+            src = src.replace(/^(https?:\/\/\w\d+\.cdn\d+\.imgwykop\.pl\/.+),.+(\.\w{1,4})(.?)+$/, '$1$2');
+
+        const img = mc.getElementsByTagName('img')[0];
+        img.style.maxWidth = '99%';
+        img.style.maxHeight = `${0.85 * window.innerHeight}px`;
+        img.classList.remove('lazy');
+        img.src = src;
     };
-    // Zamieniamy src obrazków na źródłowe, timeout, żeby być pewnym, że się załadowało i będzie co zmieniać :)
 
+    const isInteresting = (a) => a.rel !== 'lightbox[w]'
+            && (bLoadImg && /\.(jpg|jpeg|png|gif)/i.test(a.href)
+                || bLoadVid && /(youtube\.|youtu\.be|vimeo\.com)/i.test(a.href));
+    const clickMCEntry = (a) => isInteresting(a) && a.click();
+    const clickMCEntries = (root) => [...root.querySelectorAll('.iC .media-content > a:first-child')].forEach(clickMCEntry);
 
-    function linki($this) {
-        window.setTimeout(function () {
-            // zamianiamy zrodlo obrazka na oryginalne
-            $('.media-content', $this).each(function () {
-                var $this = $(this);
-                $this.css('max-width', "99%");
-                $this.css('max-height', .85 * $(window).height() + 26);
-                $this.css('min-width', "0px");
-                $this.css('min-height', "0px");
-                $this.find('.description').css('position', 'static');
-                $this.find('.description a:first-child').css('width', 'auto');
-                var $img = $this.find('img');
-                $img.removeClass('lazy');
-                $img.css('max-height', .85 * $(window).height());
-                $img.css('max-width', "99%");
-                var src = $this.find('.description.light > a[target=_blank]').attr('href');
-                if (bRemoveWatermark && "undefined" != typeof src) {
-                    src = src.replace(/^(https?:\/\/\w\d+\.cdn\d+\.imgwykop\.pl\/.+),.+(\.\w{1,4})(.?)+$/, "$1$2");
-                }
-                $this.find('.expand').remove();
-                $img.attr("src", src);
-            });
-        }, 500);
+    const hookMCEntry = (mc) => {
+        // Separate observer for each element so we can disconnect them later.
+        const observer = new MutationObserver((mutationsList, observer) => {
+            for(const mutation of mutationsList)
+                if (mutation.type == 'childList')
+                    mutation.addedNodes.forEach(processMediaContent);
+            observer.disconnect();
+        });
+        observer.observe(mc.parentNode, { childList: true });
+        if (auto)
+            clickMCEntry(mc.getElementsByTagName('a')[0]);
+    };
+    const hookMCEntries = (root) => [...root.querySelectorAll('.iC .media-content')].forEach(hookMCEntry);
+
+    const nav = document.querySelectorAll('.nav.bspace.rbl-block')[0] || document.querySelectorAll('.nav.fix-b-border')[0];
+    if (nav)
+        nav.insertAdjacentHTML('afterbegin', '<ul><li><a id="btnAutoLoad" href="javascript: void(0)">auto</a></li><li><a id="btnLoadImg" href="javascript: void(0)">pokaż obrazki</a></li></ul>');
+
+    const btnAutoLoad = document.getElementById('btnAutoLoad');
+    if (auto)
+        btnAutoLoad.parentNode.classList.add('active');
+    btnAutoLoad.onclick = (e) => {
+        auto = e.target.parentNode.classList.toggle('active');
+        localStorage.setItem(settings, auto);
+    };
+
+    document.getElementById('btnLoadImg').onclick = (e) => clickMCEntries(e.target.closest('div.grid-main'));
+
+    for (const mc of document.querySelectorAll('.iC .media-content')) {
+        // Separate observer for each element so we can disconnect them later.
+        hookMCEntry(mc);
     }
 
-    function gdzie(e) {
-        return document.location.pathname.substring(0, 5) == "/" + e;
+    const itemsStream = document.getElementById('itemsStream');
+    if (itemsStream) {
+        const observer = new MutationObserver((mutationsList) => {
+            for(const mutation of mutationsList)
+                if (mutation.type == 'childList')
+                    mutation.addedNodes.forEach((el) => hookMCEntries(el));
+        });
+        observer.observe(itemsStream, { childList: true });
     }
-}
-
-// jQueryLoader, see https://github.com/kasper93/userscripts for unminified version.
-function a(){this.message="unsafeWindow failed!";this.name="Exception"}try{main(jQuery)}catch(b){console.log(b.message);try{if("undefined"===typeof unsafeWindow.jQuery)throw new a;main(unsafeWindow.jQuery)}catch(c){console.log(c.message);try{var d=document.createElement("script");d.textContent="("+main.toString()+")(window.jQuery);";document.body.appendChild(d)}catch(e){console.log(e.message)}}};
+})();
