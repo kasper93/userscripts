@@ -13,12 +13,12 @@
 // @include	https://*.wykop.pl/tag*
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/WykopPokazObrazki.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/WykopPokazObrazki.user.js
-// @version	2.0.0
+// @version	2.0.1
 // @grant	none
 // @run-at	document-idle
 // ==/UserScript==
 
-(function() {
+(() => {
     const bLoadImg = true;
     const bLoadVid = false;
     const bRemoveWatermark = true;
