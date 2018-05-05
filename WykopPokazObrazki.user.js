@@ -7,7 +7,7 @@
 // @include	https://*.wykop.pl/*
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/WykopPokazObrazki.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/WykopPokazObrazki.user.js
-// @version	2.0.3
+// @version	2.0.4
 // @grant	none
 // @run-at	document-idle
 // ==/UserScript==
@@ -15,16 +15,36 @@
 'use strict';
 
 (() => {
-    const bLoadImg = true;
     const bLoadVid = false;
     const bUseExternalSourceUrl = false;
 
     const settings = 'autoLoadImages';
     let auto = localStorage.getItem(settings) === 'true' || false;
 
-    const processMediaContent = (mc) => {
-        if (!mc.classList.contains('media-content'))
+    const processVideoWrapper = (vw) => {
+        const video = vw.querySelector(':scope > video');
+        if (!video)
             return;
+
+        video.style.maxWidth = '99%';
+        video.style.maxHeight = '85vh';
+        video.style.width = 'auto';
+        video.style.position = 'relative';
+
+        vw.style.paddingBottom = '0px';
+        vw.style.paddingTop = '0px';
+        vw.style.height = 'auto';
+        vw.style.textAlign = 'center';
+    };
+
+    const processMediaContent = (mc) => {
+        if (!mc.classList.contains('media-content')) {
+            // Is it a video tho?
+            const videoWrapper = mc.querySelector(':scope .videoWrapper');
+            if (videoWrapper)
+                processVideoWrapper(videoWrapper);
+            return;
+        }
 
         const expand = mc.getElementsByClassName('expand')[0];
         if (expand)
@@ -58,16 +78,14 @@
                 load.onerror = () => setCleanSrc(img.src);
                 load.src = a.href;
             } else {
-                setCleanSrc(img.src);
+                setCleanSrc(img.parentNode.href || img.src);
             }
         }
     };
 
-    const isInteresting = (a) => a.rel !== 'lightbox[w]'
-            && (bLoadImg && /\.(jpg|jpeg|png|gif)/i.test(a.href)
-                || bLoadVid && /(youtube\.|youtu\.be|vimeo\.com)/i.test(a.href));
+    const isInteresting = (a) => bLoadVid || !/(youtube\.|youtu\.be|vimeo\.com)/i.test(a.href);
     const clickMCEntry = (a) => isInteresting(a) && a.click();
-    const clickMCEntries = (root) => [...root.querySelectorAll(':scope .iC .media-content > a:first-child')].forEach(clickMCEntry);
+    const clickMCEntries = (root) => [...root.querySelectorAll(':scope .iC .media-content.hide-image > a:first-child')].forEach(clickMCEntry);
 
     const hookMCEntry = (mc) => {
         // Separate observer for each element so we can disconnect them later.
@@ -81,21 +99,20 @@
         if (auto)
             clickMCEntry(mc.getElementsByTagName('a')[0]);
     };
-    const hookMCEntries = (root) => [...root.getElementsByClassName('media-content')].forEach(hookMCEntry);
+    const hookMCEntries = (root) => [...root.querySelectorAll('.media-content.hide-image')].forEach(hookMCEntry);
 
     const nav = document.querySelector('.nav.bspace.rbl-block') || document.querySelector('.nav.fix-b-border');
-    if (nav)
+    if (nav) {
         nav.insertAdjacentHTML('afterbegin', '<ul><li><a id="btnAutoLoad" href="javascript: void(0)">auto</a></li><li><a id="btnLoadImg" href="javascript: void(0)">pokaż obrazki</a></li></ul>');
-
-    const btnAutoLoad = document.getElementById('btnAutoLoad');
-    if (auto)
-        btnAutoLoad.parentNode.classList.add('active');
-    btnAutoLoad.onclick = (e) => {
-        auto = e.target.parentNode.classList.toggle('active');
-        localStorage.setItem(settings, auto);
-    };
-
-    document.getElementById('btnLoadImg').onclick = (e) => clickMCEntries(e.target.closest('div.grid-main'));
+        const btnAutoLoad = document.getElementById('btnAutoLoad');
+        if (auto)
+            btnAutoLoad.parentNode.classList.add('active');
+        btnAutoLoad.onclick = (e) => {
+            auto = e.target.parentNode.classList.toggle('active');
+            localStorage.setItem(settings, auto);
+        };
+        document.getElementById('btnLoadImg').onclick = (e) => clickMCEntries(e.target.closest('div.grid-main'));
+    }
 
     hookMCEntries(document);
     const itemsStream = document.getElementById('itemsStream');
