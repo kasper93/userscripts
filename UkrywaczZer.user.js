@@ -7,40 +7,29 @@
 // @include	https://*wykop.pl/*
 // @downloadURL	https://raw.githubusercontent.com/kasper93/userscripts/master/UkrywaczZer.user.js
 // @updateURL	https://raw.githubusercontent.com/kasper93/userscripts/master/UkrywaczZer.user.js
-// @version	1.1.6
+// @version	2.0.0
 // @grant	none
 // @run-at	document-end
 // ==/UserScript==
 
-function main($) {
-    $(function () {
-        ukryjmikro();
-    });
+'use strict';
 
-    $(document).ajaxComplete(function () {
-        ukryjmikro();
-    });
+(() => {
+    const remove = b => b && b.textContent === '0' && b.remove();
+    const incrementalRemove = root => {
+        root.tagName == 'P' && root.querySelectorAll(':scope > b').forEach(remove);
+        root.tagName == 'LI' && root.querySelectorAll(':scope .vC > b').forEach(remove);
+    };
 
-    $('div.recentPlaceHolder').on("click", function () {
-        window.setTimeout(function () {
-            ukryjmikro();
-        }, 500);
-    });
+    const itemsStream = document.getElementById('itemsStream');
+    if (itemsStream) {
+        itemsStream.querySelectorAll(':scope .vC > b').forEach(remove);
 
-    function ukryjmikro() {
-        $('#itemsStream .vC').filter(function () {
-            var $this = $(this).find('b');
-            if ($this.length == 2) {
-                return $this.find('span').text() === '00';
-            } else {
-                return $this.find('span').text() === '0';
-            }
-        }).find('b').remove();
-        //var nick = $('.quickpoint a[title="Przejdź do swojego profilu"]').text();
-        //$('#activities-stream strong.fbold:contains(' + nick + ')').closest('blockquote').find('.icon.plus').remove();
-        //$('a.showVoters').click();
+        const observer = new MutationObserver(mutationsList => {
+            for(const mutation of mutationsList)
+                if (mutation.type == 'childList')
+                    mutation.addedNodes.forEach(incrementalRemove);
+        });
+        observer.observe(itemsStream, { childList: true, subtree: true });
     }
-}
-
-// jQueryLoader, see https://github.com/kasper93/userscripts for unminified version.
-function a(){this.message="unsafeWindow failed!";this.name="Exception"}try{main(jQuery)}catch(b){console.log(b.message);try{if("undefined"===typeof unsafeWindow.jQuery)throw new a;main(unsafeWindow.jQuery)}catch(c){console.log(c.message);try{var d=document.createElement("script");d.textContent="("+main.toString()+")(window.jQuery);";document.body.appendChild(d)}catch(e){console.log(e.message)}}};
+})();
