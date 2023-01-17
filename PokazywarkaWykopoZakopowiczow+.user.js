@@ -7,58 +7,49 @@
 // @include     https://*wykop.pl/link/*
 // @downloadURL https://raw.githubusercontent.com/kasper93/userscripts/master/PokazywarkaWykopoZakopowiczow+.user.js
 // @updateURL   https://raw.githubusercontent.com/kasper93/userscripts/master/PokazywarkaWykopoZakopowiczow+.user.js
-// @version 2.0.1
+// @version 3.0.0
 // @grant   none
 // @run-at  document-end
 // ==/UserScript==
 
 (() => {
-    const wykop_ = wykop || unsafeWindow.wykop;
-
-    const createMap = (r, s) => {
-        const ret = new Map();
-        let m;
-        while ((m = r.exec(s)))
-            ret.set(m[1], m[2]);
-        return ret;
+    const reasonMap = {
+        'duplicate': 'duplikat',
+        'spam': 'spam',
+        'fake': 'informacja nieprawdziwa',
+        'wrong': 'treść nieodpowiednia',
+        'invalid': 'nie nadaje się',
     };
 
-    const createSet = (r, s) => {
+    const createMap = (s) => {
+        const ret = new Map();
+        s.forEach(entry => ret.set(entry.user.username, reasonMap[entry.reason]));
+        return ret
+    };
+
+    const createSet = (s) => {
         const ret = new Set();
-        let m;
-        while ((m = r.exec(s)))
-            ret.add(m[1]);
-        return ret;
+        s.forEach(entry => ret.add(entry.user.username));
+        return ret
     };
 
     const getNames = (url, action) => {
         return new Promise((resolve, reject) => {
-            if (!url.match(/hash\//))
-                if (url.match(/\?/))
-                    url = url.replace('?', `/hash/${wykop_.params.hash}?`);
-                else
-                    url += `/hash/${wykop_.params.hash}`;
-
             fetch(url, {
-                headers: new Headers({'X-Requested-With': 'XMLHttpRequest'})
+                headers: {Authorization: `Bearer ${window.localStorage.getItem('token')}`}
             }).then(response => {
                 if (!response.ok) {
                     reject(response.statusText);
                     return;
                 }
-                return response.text();
-            }).then(text => {
-                const r = JSON.parse(text.startsWith('for(;;);') ? text.substring(8) : text);
-                if (r.error) {
-                    reject('Wykop responded with error.');
-                    return;
-                }
+                return response.json();
+            }).then(r => {
                 switch (action) {
                 case 0:
-                    resolve(createSet(/<b>(.*)<\/b>/g, r.operations[2].html));
+                    resolve(createSet(r.data));
                     break;
                 case 1:
-                    resolve(createMap(/<b>(.*)<\/b>\s*<\/span>\s*<span class="info">\s*([^<]*)<br>/g, r.operations[2].html));
+                    resolve(createMap(r.data));
                     break;
                 }
             }).catch((error) => reject(error.message));
@@ -67,17 +58,16 @@
 
     const id = /link\/(\d+)\//.exec(document.location.pathname)[1];
     Promise.all([
-        getNames(`//www.wykop.pl/ajax2/links/Upvoters/${id}`, 0),
-        getNames(`//www.wykop.pl/ajax2/links/Downvoters/${id}`, 1)
+        getNames(`${document.location.origin}/api/v3/links/${id}/upvotes/up`, 0),
+        getNames(`${document.location.origin}/api/v3/links/${id}/upvotes/down`, 1)
     ]).then(([upvotes, downvotes]) => {
-        const comments = document.querySelectorAll('.comments-stream div[data-type="comment"] .showProfileSummary b');
-        let comment;
-        for (comment of comments) {
-            const username = comment.textContent;
+        const comments = document.querySelectorAll('#link-comments .entry .username');
+        for (const comment of comments) {
+            const username = comment.textContent.trim();
             if (upvotes.has(username))
-                comment.closest('.author').insertAdjacentHTML('beforeend', '<b class="small color-0">(wykopał)</b>');
+                comment.insertAdjacentHTML('afterend', ' <b class="green-profile" style="font-size: 13px">(wykopał)</b>');
             else if (downvotes.has(username))
-                comment.closest('.author').insertAdjacentHTML('beforeend', `<b class="small color-2">(${downvotes.get(username)})</b>`);
+                comment.insertAdjacentHTML('afterend', ` <b class="red-profile" style="font-size: 13px">(${downvotes.get(username)})</b>`);
         }
     }, error => console.error(`PokazywarkaWykopoZakopowiczow: ${error}`));
 })();
